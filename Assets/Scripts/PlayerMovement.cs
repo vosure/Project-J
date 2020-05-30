@@ -2,38 +2,36 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent (typeof(CharacterController))]
+[RequireComponent(typeof(Rigidbody))]
 public class PlayerMovement : MonoBehaviour
 {
     //NOTE(vosure): Think about conventions - public vs private/[SerializeField]
     public float movementSpeed = 5.0f;
 
-    public float turnSmoothTime = 0.1f;
-    private float turnSmoothVelocity;
+    private Vector3 velocity;
 
     //NOTE(vosure): Think about conventions - private/RequireComponent vs public and drag by hands
-    private CharacterController controller;
+    private Rigidbody rigidbody;
 
-    private void Awake()
+
+    private void Start()
     {
-        controller = GetComponent<CharacterController>();
+        rigidbody = GetComponent<Rigidbody>();
     }
 
-    void Update()
+    private void FixedUpdate()
     {
-        //TODO(vosure): Handle input for jumps if needed
-        float horizontalInput = Input.GetAxisRaw("Horizontal");
-        float verticalInput = Input.GetAxisRaw("Vertical");
-        Vector3 direction = new Vector3(horizontalInput, 0.0f, verticalInput).normalized;
+        rigidbody.MovePosition(rigidbody.position + velocity * Time.fixedDeltaTime);
+    }
 
-        if (direction.magnitude >= 0.1f)
-        {
-            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
-            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
-            transform.rotation = Quaternion.Euler(0.0f, angle, 0.0f);
+    public void UpdateVelocity(Vector3 inputVelocity)
+    {
+        velocity = inputVelocity.normalized * movementSpeed;
+    }
 
-            controller.Move(direction * movementSpeed * Time.deltaTime);
-        }
-        
+    public void LookAt(Vector3 point)
+    {
+        Vector3 heightCorrectedPoint = new Vector3(point.x, transform.position.y, point.z);
+        transform.LookAt(heightCorrectedPoint);
     }
 }

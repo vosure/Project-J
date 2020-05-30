@@ -6,7 +6,4 @@ public class MapGenerator : MonoBehaviour
 {
     public GameObject[] trees;
     public GameObject[] stones;
-
-
-
 }
