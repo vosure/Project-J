@@ -42,7 +42,16 @@ public class Player : MonoBehaviour
 
             crosshair.transform.position = point;
             crosshair.DetectTarget(ray);
+            if ((new Vector2(point.x, point.z) - new Vector2(transform.position.x, transform.position.z)).sqrMagnitude > 1)
+                firearmWeaponController.Aim(point);
         }
+
+        if (Input.GetMouseButton(0))
+            firearmWeaponController.OnTriggerHold();
+        if (Input.GetMouseButtonUp(0))
+            firearmWeaponController.OnTriggerRelease();
+        if (Input.GetKeyDown(KeyCode.R))
+            firearmWeaponController.Reload();
     }
 
 
