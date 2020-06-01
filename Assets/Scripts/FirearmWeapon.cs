@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class FirearmWeapon : MonoBehaviour
@@ -26,21 +25,22 @@ public class FirearmWeapon : MonoBehaviour
     public Transform shell;
     public Transform shellEjection;
 
-    //public AudioClip shootAudio;
-    //public AudioClip reloadAudio;
+    public AudioClip shootAudio;
+    public AudioClip reloadAudio;
 
-    Vector3 recoilSmoothDampVelocity;
-    float recoilRotationSmoothDampVelocity;
-    float recoilAngle;
+    private Vector3 recoilSmoothDampVelocity;
+    private float recoilRotationSmoothDampVelocity;
+    private float recoilAngle;
 
-    float nextShotTime;
+    private float nextShotTime;
 
-    //Muzzleflash muzzleflash;
+    private Muzzleflash muzzleflash;
 
-    bool triggerReleasedSinceLastShoot;
-    int shotsRemainingInBurst;
-    int projectilesRemainingInMag;
-    bool isReloading;
+    private bool triggerReleasedSinceLastShoot;
+    private int shotsRemainingInBurst;
+    private int projectilesRemainingInMag;
+
+    private bool isReloading;
 
     private void LateUpdate()
     {
@@ -56,7 +56,7 @@ public class FirearmWeapon : MonoBehaviour
 
     private void Start()
     {
-        //muzzleflash = GetComponent<Muzzleflash>();
+        muzzleflash = GetComponent<Muzzleflash>();
         shotsRemainingInBurst = burstCount;
         projectilesRemainingInMag = projectilesPerMag;
     }
@@ -94,13 +94,13 @@ public class FirearmWeapon : MonoBehaviour
             }
 
             Instantiate(shell, shellEjection.position, shellEjection.rotation);
-            //muzzleflash.Activate();
+            muzzleflash.Activate();
 
             transform.localPosition -= Vector3.forward * Random.Range(kickMinMax.x, kickMinMax.y);
             recoilAngle += Random.Range(recoilAngleMinMax.x, recoilAngleMinMax.y);
             recoilAngle = Mathf.Clamp(recoilAngle, 0, 30);
 
-            //AudioManager.instance.PlaySound(shootAudio, transform.position);
+            AudioSource.PlayClipAtPoint(shootAudio, transform.position, 10.0f); //TODO(vosure): Audio manager with volume serialization
         }
     }
 
@@ -109,7 +109,7 @@ public class FirearmWeapon : MonoBehaviour
         if (!isReloading && projectilesRemainingInMag != projectilesPerMag)
         {
             StartCoroutine(AnimateReload());
-            //AudioManager.instance.PlaySound(reloadAudio, transform.position);
+            AudioSource.PlayClipAtPoint(reloadAudio, transform.position, 1.0f); //TODO(vosure): Audio manager with volume serialization
         }
 
     }

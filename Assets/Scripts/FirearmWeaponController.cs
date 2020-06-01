@@ -23,8 +23,6 @@ public class FirearmWeaponController : MonoBehaviour
             EquipGun(2);
         if (Input.GetKeyDown(KeyCode.Alpha4))
             EquipGun(3);
-        if (Input.GetKeyDown(KeyCode.Alpha5))
-            EquipGun(4);
     }
 
     public void EquipGun(FirearmWeapon gunToEquip)

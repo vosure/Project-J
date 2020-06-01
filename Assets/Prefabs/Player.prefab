@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1903324756294495219}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Second Weapon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 1903324757059675981}
   - component: {fileID: 1903324757059675980}
   - component: {fileID: 1903324757059675983}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -130,7 +130,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1903324757519388944}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: First Weapon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -164,7 +164,7 @@ GameObject:
   - component: {fileID: 7381317306501583617}
   - component: {fileID: 1903324757751169937}
   - component: {fileID: 3437821252962706127}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -243,7 +243,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponHold: {fileID: 1903324757519388944}
-  allGuns: []
+  allGuns:
+  - {fileID: -4453336026231607311, guid: 119551172e2002344983c075ab97ef79, type: 3}
+  - {fileID: 1443565667792115444, guid: 57bf5071e0a1c8947b8918a8f96184a6, type: 3}
+  - {fileID: 6569175704861616115, guid: 8d43e76b346f2f8448846e9211629d15, type: 3}
+  - {fileID: 4678235453166711928, guid: 0460a539b95c36d43a61b9c176cdca57, type: 3}
 --- !u!1 &1903324757933306182
 GameObject:
   m_ObjectHideFlags: 0
@@ -256,7 +260,7 @@ GameObject:
   - component: {fileID: 1903324757933306186}
   - component: {fileID: 1903324757933306181}
   - component: {fileID: 1903324757933306180}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}

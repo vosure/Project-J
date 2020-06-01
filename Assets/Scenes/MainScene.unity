@@ -382,7 +382,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 1.5853e-41, y: 0, z: 1.47e-43, w: 0.1015625}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
@@ -458,7 +458,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 279
+    m_Bits: 4294967295
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -890,17 +890,6 @@ PrefabInstance:
       propertyPath: crosshair
       value: 
       objectReference: {fileID: 2143631405}
-    - target: {fileID: 3437821252962706127, guid: 84cb4381d1808f34ebeb2b573fb6c1de,
-        type: 3}
-      propertyPath: allGuns.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3437821252962706127, guid: 84cb4381d1808f34ebeb2b573fb6c1de,
-        type: 3}
-      propertyPath: allGuns.Array.data[0]
-      value: 
-      objectReference: {fileID: -4453336026231607311, guid: 119551172e2002344983c075ab97ef79,
-        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 84cb4381d1808f34ebeb2b573fb6c1de, type: 3}
 --- !u!114 &2143631405 stripped
