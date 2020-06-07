@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class PlayerCamera : MonoBehaviour
 {
-    //TODO(vosure): Choose which one is better!?
+    //TODO(vosure): Choose which one is better / CameraController!?
+    //NOTE(vosure): Don't use it, but probably we will need it later
     public enum CameraFollowType
     {
         Static,

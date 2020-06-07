@@ -497,7 +497,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb5b6cb7319a03747a7be24e266ebfbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  followType: 1
+  followType: 0
   player: {fileID: 656681477}
   height: 30
   distance: 15
