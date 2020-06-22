@@ -32,7 +32,6 @@ public class CameraController : MonoBehaviour
     Vector3 CaptureMousePos()
     {
         Vector2 ret = Camera.main.ScreenToViewportPoint(Input.mousePosition); 
-        Debug.Log(ret);
         ret *= 2;
         ret -= Vector2.one; 
         float max = 0.9f;

@@ -216,7 +216,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a7bacfa425328c4ca7bb78c345b5f19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  crosshair: {fileID: 0}
+  crosshair: {fileID: 5185066785939571487, guid: 8777851e01f31884da2c149df9169a42,
+    type: 3}
 --- !u!114 &1903324757751169937
 MonoBehaviour:
   m_ObjectHideFlags: 0

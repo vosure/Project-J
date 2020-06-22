@@ -2,213 +2,234 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelGenerator : MonoBehaviour {
-	enum gridSpace {empty, floor, wall};
-	gridSpace[,] grid;
-	int roomHeight, roomWidth;
-	public Vector2 roomSizeWorldUnits = new Vector2(50,50);
-	public float worldUnitsInOneGridCell = 4;
+public class LevelGenerator
+{
+    private int width;
+    private int height;
 
-	struct walker{
-		public Vector2 dir;
-		public Vector2 pos;
-	}
-	List<walker> walkers;
-	float chanceWalkerChangeDir = 0.5f, chanceWalkerSpawn = 0.05f;
-	float chanceWalkerDestoy = 0.05f;
-	int maxWalkers = 10;
-	float percentToFill = 0.2f; 
-	public GameObject wallObj, floorObj;
-	void Start () {
-		Setup();
-		CreateFloors();
-		CreateWalls();
-		RemoveSingleWalls();
-		SpawnLevel();
-	}
-	void Setup(){
-		//find grid size
-		roomHeight = Mathf.RoundToInt(roomSizeWorldUnits.x / worldUnitsInOneGridCell);
-		roomWidth = Mathf.RoundToInt(roomSizeWorldUnits.y / worldUnitsInOneGridCell);
-		//create grid
-		grid = new gridSpace[roomWidth,roomHeight];
-		//set grid's default state
-		for (int x = 0; x < roomWidth-1; x++){
-			for (int y = 0; y < roomHeight-1; y++){
-				//make every cell "empty"
-				grid[x,y] = gridSpace.empty;
-			}
-		}
-		//set first walker
-		//init list
-		walkers = new List<walker>();
-		//create a walker 
-		walker newWalker = new walker();
-		newWalker.dir = RandomDirection();
-		//find center of grid
-		Vector2 spawnPos = new Vector2(Mathf.RoundToInt(roomWidth/ 2.0f),
-										Mathf.RoundToInt(roomHeight/ 2.0f));
-		newWalker.pos = spawnPos;
-		//add walker to list
-		walkers.Add(newWalker);
-	}
-	void CreateFloors(){
-		int iterations = 0;//loop will not run forever
-		do{
-			//create floor at position of every walker
-			foreach (walker myWalker in walkers){
-				grid[(int)myWalker.pos.x,(int)myWalker.pos.y] = gridSpace.floor;
-			}
-			//chance: destroy walker
-			int numberChecks = walkers.Count; //might modify count while in this loop
-			for (int i = 0; i < numberChecks; i++){
-				//only if its not the only one, and at a low chance
-				if (Random.value < chanceWalkerDestoy && walkers.Count > 1){
-					walkers.RemoveAt(i);
-					break; //only destroy one per iteration
-				}
-			}
-			//chance: walker pick new direction
-			for (int i = 0; i < walkers.Count; i++){
-				if (Random.value < chanceWalkerChangeDir){
-					walker thisWalker = walkers[i];
-					thisWalker.dir = RandomDirection();
-					walkers[i] = thisWalker;
-				}
-			}
-			//chance: spawn new walker
-			numberChecks = walkers.Count; //might modify count while in this loop
-			for (int i = 0; i < numberChecks; i++){
-				//only if # of walkers < max, and at a low chance
-				if (Random.value < chanceWalkerSpawn && walkers.Count < maxWalkers){
-					//create a walker 
-					walker newWalker = new walker();
-					newWalker.dir = RandomDirection();
-					newWalker.pos = walkers[i].pos;
-					walkers.Add(newWalker);
-				}
-			}
-			//move walkers
-			for (int i = 0; i < walkers.Count; i++){
-				walker thisWalker = walkers[i];
-				thisWalker.pos += thisWalker.dir;
-				walkers[i] = thisWalker;				
-			}
-			//avoid boarder of grid
-			for (int i =0; i < walkers.Count; i++){
-				walker thisWalker = walkers[i];
-				//clamp x,y to leave a 1 space boarder: leave room for walls
-				thisWalker.pos.x = Mathf.Clamp(thisWalker.pos.x, 1, roomWidth-2);
-				thisWalker.pos.y = Mathf.Clamp(thisWalker.pos.y, 1, roomHeight-2);
-				walkers[i] = thisWalker;
-			}
-			//check to exit loop
-			if ((float)NumberOfFloors() / (float)grid.Length > percentToFill){
-				break;
-			}
-			iterations++;
-		}while(iterations < 100000);
-	}
-	void CreateWalls(){
-		//loop though every grid space
-		for (int x = 0; x < roomWidth-1; x++){
-			for (int y = 0; y < roomHeight-1; y++){
-				//if theres a floor, check the spaces around it
-				if (grid[x,y] == gridSpace.floor){
-					//if any surrounding spaces are empty, place a wall
-					if (grid[x,y+1] == gridSpace.empty){
-						grid[x,y+1] = gridSpace.wall;
-					}
-					if (grid[x,y-1] == gridSpace.empty){
-						grid[x,y-1] = gridSpace.wall;
-					}
-					if (grid[x+1,y] == gridSpace.empty){
-						grid[x+1,y] = gridSpace.wall;
-					}
-					if (grid[x-1,y] == gridSpace.empty){
-						grid[x-1,y] = gridSpace.wall;
-					}
-				}
-			}
-		}
-	}
-	void RemoveSingleWalls(){
-		//loop though every grid space
-		for (int x = 0; x < roomWidth-1; x++){
-			for (int y = 0; y < roomHeight-1; y++){
-				//if theres a wall, check the spaces around it
-				if (grid[x,y] == gridSpace.wall){
-					//assume all space around wall are floors
-					bool allFloors = true;
-					//check each side to see if they are all floors
-					for (int checkX = -1; checkX <= 1 ; checkX++){
-						for (int checkY = -1; checkY <= 1; checkY++){
-							if (x + checkX < 0 || x + checkX > roomWidth - 1 || 
-								y + checkY < 0 || y + checkY > roomHeight - 1){
-								//skip checks that are out of range
-								continue;
-							}
-							if ((checkX != 0 && checkY != 0) || (checkX == 0 && checkY == 0)){
-								//skip corners and center
-								continue;
-							}
-							if (grid[x + checkX,y+checkY] != gridSpace.floor){
-								allFloors = false;
-							}
-						}
-					}
-					if (allFloors){
-						grid[x,y] = gridSpace.floor;
-					}
-				}
-			}
-		}
-	}
-	void SpawnLevel(){
-		for (int x = 0; x < roomWidth; x++){
-			for (int y = 0; y < roomHeight; y++){
-				switch(grid[x,y]){
-					case gridSpace.empty:
-						break;
-					case gridSpace.floor:
-						Spawn(x,-1, y,floorObj);
-						break;
-					case gridSpace.wall:
-						Spawn(x,0, y,wallObj);
-						break;
-				}
-			}
-		}
-	}
-	Vector2 RandomDirection(){
-		//pick random int between 0 and 3
-		int choice = Mathf.FloorToInt(Random.value * 3.99f);
-		//use that int to chose a direction
-		switch (choice){
-			case 0:
-				return Vector2.down;
-			case 1:
-				return Vector2.left;
-			case 2:
-				return Vector2.up;
-			default:
-				return Vector2.right;
-		}
-	}
-	int NumberOfFloors(){
-		int count = 0;
-		foreach (gridSpace space in grid){
-			if (space == gridSpace.floor){
-				count++;
-			}
-		}
-		return count;
-	}
-	void Spawn(float x, float y, float z, GameObject toSpawn){
-		//find the position to spawn
-		Vector2 offset = roomSizeWorldUnits / 2.0f;
-		Vector2 spawnPos = new Vector2(x,y) * worldUnitsInOneGridCell - offset;
-		//spawn object
-		Instantiate(toSpawn, new Vector3(spawnPos.x, y, z), Quaternion.identity);
-	}
+    private float chanceTochangeDirection;
+    private float chanceToSpawn;
+    private float chanceToDestroy;
+
+    private int maxWalkers;
+
+    private float fillPercent;
+
+    private LevelObjectType[,] level;
+
+    private List<Walker> walkers;
+
+    public LevelGenerator(int width, int height, float chanceTochangeDirection, float chanceToSpawn, float chanceToDestroy, int maxWalkers, float fillPercent)
+    {
+        this.width = width;
+        this.height = height;
+
+        this.chanceTochangeDirection = chanceTochangeDirection;
+        this.chanceToSpawn = chanceToSpawn;
+        this.chanceToDestroy = chanceToDestroy;
+
+        this.maxWalkers = maxWalkers;
+        this.fillPercent = fillPercent;
+    }
+
+    public LevelObjectType[,] GenerateLevel()
+    {
+        Setup();
+        GenerateFloor();
+        GenerateWalls();
+        RemoveSingleWalls();
+
+        return level;
+    }
+
+    void Setup()
+    {
+        level = new LevelObjectType[width, height];
+        
+        for (int x = 0; x < width - 1; x++)
+        {
+            for (int y = 0; y < height - 1; y++)
+            {
+        
+                level[x, y] = LevelObjectType.Empty;
+            }
+        }
+
+        walkers = new List<Walker>();
+        
+        Walker newWalker = new Walker();
+        newWalker.moveDirection = GetRandomDirection();
+        
+        Vector2 spawnPos = new Vector2(Mathf.RoundToInt(width / 2.0f),
+                                        Mathf.RoundToInt(height / 2.0f));
+        newWalker.currentPosition = spawnPos;
+        
+        walkers.Add(newWalker);
+    }
+
+    void GenerateFloor()
+    {
+        int iterations = 0;
+        do
+        {
+            
+            foreach (Walker walker in walkers)
+            {
+                level[(int)walker.currentPosition.x, (int)walker.currentPosition.y] = LevelObjectType.Floor;
+            }
+            
+            for (int i = 0; i < walkers.Count; i++)
+            {
+                if (Random.value < chanceToDestroy && walkers.Count > 1)
+                {
+                    walkers.RemoveAt(i);
+                    break; 
+                }
+            }
+            
+            for (int i = 0; i < walkers.Count; i++)
+            {
+                if (Random.value < chanceTochangeDirection)
+                {
+                    Walker thisWalker = walkers[i];
+                    thisWalker.moveDirection = GetRandomDirection();
+                    walkers[i] = thisWalker;
+                }
+            }
+            
+            for (int i = 0; i < walkers.Count; i++)
+            {
+                
+                if (Random.value < chanceToSpawn && walkers.Count < maxWalkers)
+                {
+                    
+                    Walker newWalker = new Walker();
+                    newWalker.moveDirection = GetRandomDirection();
+                    newWalker.currentPosition = walkers[i].currentPosition;
+                    walkers.Add(newWalker);
+                }
+            }
+            for (int i = 0; i < walkers.Count; i++)
+            {
+                Walker thisWalker = walkers[i];
+                thisWalker.currentPosition += thisWalker.moveDirection;
+                walkers[i] = thisWalker;
+            }
+            for (int i = 0; i < walkers.Count; i++)
+            {
+                Walker thisWalker = walkers[i];
+                thisWalker.currentPosition.x = Mathf.Clamp(thisWalker.currentPosition.x, 1, width - 2);
+                thisWalker.currentPosition.y = Mathf.Clamp(thisWalker.currentPosition.y, 1, height - 2);
+                walkers[i] = thisWalker;
+            }
+            if ((float)NumberOfFloors() / (float)level.Length > fillPercent)
+            {
+                break;
+            }
+            iterations++;
+        } while (iterations < 100000); //NOTE(vosure): Do I actually need that?! Probably check fillPercent is enought?!
+    }
+
+    void GenerateWalls()
+    {
+        for (int x = 0; x < width - 1; x++)
+        {
+            for (int y = 0; y < height - 1; y++)
+            {
+                if (level[x, y] == LevelObjectType.Floor)
+                {
+                    if (level[x, y + 1] == LevelObjectType.Empty)
+                    {
+                        level[x, y + 1] = LevelObjectType.Wall;
+                    }
+                    if (level[x, y - 1] == LevelObjectType.Empty)
+                    {
+                        level[x, y - 1] = LevelObjectType.Wall;
+                    }
+                    if (level[x + 1, y] == LevelObjectType.Empty)
+                    {
+                        level[x + 1, y] = LevelObjectType.Wall;
+                    }
+                    if (level[x - 1, y] == LevelObjectType.Empty)
+                    {
+                        level[x - 1, y] = LevelObjectType.Wall;
+                    }
+                }
+            }
+        }
+    }
+    void RemoveSingleWalls()
+    {
+        for (int x = 0; x < width - 1; x++)
+        {
+            for (int y = 0; y < height - 1; y++)
+            {
+                if (level[x, y] == LevelObjectType.Wall)
+                {
+                    bool allFloors = true;
+                    for (int checkX = -1; checkX <= 1; checkX++)
+                    {
+                        for (int checkY = -1; checkY <= 1; checkY++)
+                        {
+                            if (x + checkX < 0 || x + checkX > width - 1 ||
+                                y + checkY < 0 || y + checkY > height - 1)
+                            {
+                                continue;
+                            }
+                            if ((checkX != 0 && checkY != 0) || (checkX == 0 && checkY == 0))
+                            {
+                                continue;
+                            }
+                            if (level[x + checkX, y + checkY] != LevelObjectType.Floor)
+                            {
+                                allFloors = false;
+                            }
+                        }
+                    }
+                    if (allFloors)
+                    {
+                        level[x, y] = LevelObjectType.Floor;
+                    }
+                }
+            }
+        }
+    }
+
+    Vector2 GetRandomDirection()
+    {
+        int random = Random.Range(0, 4);
+        switch (random)
+        {
+            case 0:
+                return Vector2.down;
+            case 1:
+                return Vector2.left;
+            case 2:
+                return Vector2.up;
+            default:
+                return Vector2.right;
+        }
+    }
+
+    //NOTE(vosure): Too Slow, we call it each eteration while generating floor. Find out a better way to get number of floor tiles in level
+    //TODO(vosure): Optimization!
+    int NumberOfFloors()
+    {
+        int count = 0;
+        foreach (LevelObjectType levelObject in level)
+        {
+            if (levelObject == LevelObjectType.Floor)
+            {
+                count++;
+            }
+        }
+        return count;
+    }
+
+}
+
+public struct Walker
+{
+    public Vector2 moveDirection;
+    public Vector2 currentPosition;
 }
