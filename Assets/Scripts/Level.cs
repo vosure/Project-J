@@ -56,21 +56,36 @@ public class Level : MonoBehaviour
                 switch (level[x, y])
                 {
                     case LevelObjectType.Empty:
-                        SpawnEmptyObject(x, 0, y);
-                        break;
+                        SpawnEmptyObject(x, 1, y);
+                        {
+                            if (Random.value <= 0.075f)
+                            {
+                                SpawnRandomDecoration(x, 2, y);
+                            }
+                            break;
+                        }
                     case LevelObjectType.Floor:
                         {
-                            SpawnFloorObject(x, -1, y);
+                            SpawnFloorObject(x, 0, y);
                             //TODO(vosure): Spawn Decorations!
                             break;
                         }
-                        
+
                     case LevelObjectType.Wall:
-                        SpawnWallObject(x, 0, y);
+                        SpawnWallObject(x, 1, y);
                         break;
                 }
             }
         }
+    }
+
+    void SpawnRandomDecoration(float x, float y, float z)
+    {
+        Vector2 offset = new Vector2(width, height) / 2.0f;
+        Vector2 spawnPos = new Vector2(x, z) - offset;
+        SetRandomMaterial(biome.wallPrefab, biome.wallMaterials);
+        GameObject obj = Instantiate(biome.decorationObjects[Random.Range(0, biome.decorationObjects.Length)], new Vector3(spawnPos.x, y, spawnPos.y), Quaternion.identity);
+        obj.transform.parent = levelHolder;
     }
 
     void SpawnWallObject(float x, float y, float z)
@@ -96,7 +111,7 @@ public class Level : MonoBehaviour
         Vector2 offset = new Vector2(width, height) / 2.0f;
         Vector2 spawnPos = new Vector2(x, z) - offset;
         SetRandomMaterial(biome.floorPrefab, biome.floorMaterials);
-        GameObject obj = Instantiate(biome.floorPrefab, new Vector3(spawnPos.x, y, spawnPos.y), Quaternion.identity);
+        GameObject obj = Instantiate(biome.floorPrefab, new Vector3(spawnPos.x, y, spawnPos.y), Quaternion.Euler(90, 0, 0));
         obj.transform.parent = levelHolder;
     }
 
