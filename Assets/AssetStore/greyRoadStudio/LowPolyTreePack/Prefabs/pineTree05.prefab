@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 33371218099740236}
   - component: {fileID: 23376214585744022}
   - component: {fileID: 64567018180994368}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: pineTree05
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

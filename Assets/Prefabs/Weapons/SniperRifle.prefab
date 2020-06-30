@@ -522,10 +522,10 @@ MonoBehaviour:
   fireMode: 2
   projectileSpawn:
   - {fileID: 3881261693392176737}
-  projectile: {fileID: 7751399481955506736, guid: e36e6d011d18f8c40a4eacf1675a210c,
+  projectile: {fileID: 7342333114944860472, guid: e36e6d011d18f8c40a4eacf1675a210c,
     type: 3}
   msBetweenShoots: 250
-  muzzleVelocity: 50
+  muzzleVelocity: 200
   burstCount: 3
   reloadTime: 0.2
   projectilesPerMag: 30
@@ -1007,15 +1007,15 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8839402490277928885, guid: fc27385af4ce698448f8a231feb3e062,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5311234050027469741, guid: fc27385af4ce698448f8a231feb3e062,
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 0.206
+      objectReference: {fileID: 0}
+    - target: {fileID: 8839402490277928885, guid: fc27385af4ce698448f8a231feb3e062,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fc27385af4ce698448f8a231feb3e062, type: 3}

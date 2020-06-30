@@ -10,6 +10,8 @@ public class Projectile : MonoBehaviour
     float lifeTime = 3;
     float skinWidth = 0.1f;
 
+    public GameObject hitEffectPrefab;
+
     public void setSpeed(float speed)
     {
         this.speed = speed;
@@ -22,7 +24,7 @@ public class Projectile : MonoBehaviour
         Collider[] initialCollisions = Physics.OverlapSphere(transform.position, 0.1f, collisionMask);
         if (initialCollisions.Length > 0)
         {
-            OnHitObject(initialCollisions[0], transform.position);
+            OnHitObject(initialCollisions[0], transform.position, new Vector3(0.0f, 0.0f, 0.0f));
         }
     }
 
@@ -39,10 +41,10 @@ public class Projectile : MonoBehaviour
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, moveDistance + skinWidth, collisionMask | LayerMask.GetMask("Obstacle"), QueryTriggerInteraction.Collide))
-            OnHitObject(hit.collider, hit.point);
+            OnHitObject(hit.collider, hit.point, hit.normal);
     }
 
-    void OnHitObject(Collider collider, Vector3 hitPoint)
+    void OnHitObject(Collider collider, Vector3 hitPoint, Vector3 normal)
     {
         IDamageable damageableObject = collider.GetComponent<IDamageable>();
         if (damageableObject != null)
@@ -50,6 +52,13 @@ public class Projectile : MonoBehaviour
             damageableObject.TakeHit(damage, hitPoint, transform.forward);
         }
         GameObject.Destroy(gameObject);
+
+        //TODO(vosure): Different hit empacts for different materials (soft body, sand, concrete, wood, etc)
+        if (collider.CompareTag("Environment"))
+        {
+            GameObject hitEffect = Instantiate(hitEffectPrefab, collider.gameObject.transform.position, Quaternion.LookRotation(normal)) as GameObject;
+            Destroy(hitEffect, 0.5f);
+        }
         //TODO(vosure) Piercing shots
     }
 }

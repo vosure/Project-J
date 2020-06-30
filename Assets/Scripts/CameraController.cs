@@ -5,13 +5,12 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     public Transform player;
-    Vector3 target, mousePos, refVel, shakeOffset;
-    float cameraDist = 3.5f;
+
+    public Transform cameraHolder;
+
+    Vector3 target, mousePos, refVel;
+    public float cameraDist = 1.5f;
     float smoothTime = 0.2f, zStart;
-    //shake
-    float shakeMag, shakeTimeEnd;
-    Vector3 shakeVector;
-    bool shaking;
 
     Vector3 offset;
 
@@ -19,13 +18,12 @@ public class CameraController : MonoBehaviour
     void Start()
     {
         target = player.position; 
-        offset = transform.position - player.position;
-        zStart = transform.position.y;
+        offset = cameraHolder.position - player.position;
+        zStart = cameraHolder.position.y;
     }
     void Update()
     {
         mousePos = CaptureMousePos(); 
-        shakeOffset = UpdateShake(); 
         target = UpdateTargetPos() + offset; 
         UpdateCameraPosition(); 
     }
@@ -45,33 +43,13 @@ public class CameraController : MonoBehaviour
     {
         Vector3 mouseOffset = mousePos * cameraDist; 
         Vector3 ret = player.position + mouseOffset; 
-        ret += shakeOffset; 
         ret.y = zStart; 
         return ret;
-    }
-    Vector3 UpdateShake()
-    {
-        if (!shaking || Time.time > shakeTimeEnd)
-        {
-            shaking = false; 
-            return Vector3.zero; 
-        }
-        Vector3 tempOffset = shakeVector;
-        tempOffset *= shakeMag;
-        return tempOffset;
     }
     void UpdateCameraPosition()
     {
         Vector3 tempPos;
-        tempPos = Vector3.SmoothDamp(transform.position, target, ref refVel, smoothTime); 
-        transform.position = tempPos; 
-    }
-
-    public void Shake(Vector3 direction, float magnitude, float length)
-    { 
-        shaking = true; 
-        shakeVector = direction; 
-        shakeMag = magnitude; 
-        shakeTimeEnd = Time.time + length; 
+        tempPos = Vector3.SmoothDamp(cameraHolder.position, target, ref refVel, smoothTime); 
+        cameraHolder.position = tempPos; 
     }
 }

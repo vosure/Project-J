@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 33627958677031078}
   - component: {fileID: 23159222240081780}
   - component: {fileID: 64802560808937322}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: tree_leafless
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

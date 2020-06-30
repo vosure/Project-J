@@ -67,7 +67,10 @@ public class Level : MonoBehaviour
                     case LevelObjectType.Floor:
                         {
                             SpawnFloorObject(x, 0, y);
-                            //TODO(vosure): Spawn Decorations!
+                            if (Random.value <= 0.01f)
+                            {
+                                SpawnRandomDecoration(x, 0, y);
+                            }
                             break;
                         }
 

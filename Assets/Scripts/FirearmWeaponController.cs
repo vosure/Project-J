@@ -54,7 +54,9 @@ public class FirearmWeaponController : MonoBehaviour
     public void OnTriggerHold()
     {
         if (equippedGun != null)
+        {
             equippedGun.OnTriggerHold();
+        }
     }
 
     public void OnTriggerRelease()

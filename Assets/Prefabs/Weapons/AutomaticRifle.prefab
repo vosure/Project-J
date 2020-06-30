@@ -380,6 +380,8 @@ MonoBehaviour:
   shellEjection: {fileID: 1553173734394927621}
   shootAudio: {fileID: 8300000, guid: cc347e9ef88abb64982726852defd362, type: 3}
   reloadAudio: {fileID: 8300000, guid: eb7fba23d0f0f5845b362230076def41, type: 3}
+  cameraController: {fileID: 5866343527910800446, guid: 69a2ea740dc6e384da24b0faa4ee3a4b,
+    type: 3}
 --- !u!114 &4604618898747913183
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -799,6 +801,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1886229151014536308, guid: fc27385af4ce698448f8a231feb3e062,
+        type: 3}
+      propertyPath: moveWithTransform
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6739355278677245253, guid: fc27385af4ce698448f8a231feb3e062,
+        type: 3}
+      propertyPath: m_Intensity
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1886189787501367066, guid: fc27385af4ce698448f8a231feb3e062,
         type: 3}
       propertyPath: moveWithTransform
       value: 0
