@@ -11,6 +11,8 @@ public class Player : MonoBehaviour
     private PlayerMovement movementController;
     private FirearmWeaponController firearmWeaponController;
 
+    private Animator animator;
+
     private Camera mainCamera;
 
     private void Start()
@@ -23,6 +25,8 @@ public class Player : MonoBehaviour
     {
         movementController = GetComponent<PlayerMovement>();
         firearmWeaponController = GetComponent<FirearmWeaponController>();
+        animator = GetComponentInChildren<Animator>();
+
         mainCamera = Camera.main;
     }
 
@@ -30,6 +34,7 @@ public class Player : MonoBehaviour
     {
         Vector3 moveVelocity = new Vector3(Input.GetAxisRaw("Horizontal"), 0.0f, Input.GetAxisRaw("Vertical"));
         movementController.UpdateVelocity(moveVelocity);
+        animator.SetFloat("MoveSpeed", moveVelocity.magnitude);
 
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         Plane groundPlane = new Plane(Vector3.up, Vector3.up * 1.551f);
@@ -47,7 +52,9 @@ public class Player : MonoBehaviour
         }
 
         if (Input.GetMouseButton(0))
+        { 
             firearmWeaponController.OnTriggerHold();
+        }
         if (Input.GetMouseButtonUp(0))
             firearmWeaponController.OnTriggerRelease();
         if (Input.GetKeyDown(KeyCode.R))
